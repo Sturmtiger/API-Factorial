@@ -16,15 +16,15 @@ BASE_URL = 'https://jobs.github.com/positions.json'
 JOBS = ['python', 'ruby', 'java']
 
 
-def get_response(job: str, page: int):
-    resp = requests.get(BASE_URL, params={'description': job, 'page': page})
-    logging.info(f'(Job:{job}|Page:{page}) => {resp.content})\n\n')
+def get_response(job: str, page_count=PAGE_COUNT):
+    for page_num in range(1, page_count+1):
+        resp = requests.get(BASE_URL, params={'description': job, 'page': page_num})
+        logging.info(f'(Job:{job}|Page:{page_num}) => {resp.content})\n\n')
 
 
 threads = list()
 for job in JOBS:
-    for page_num in range(1, PAGE_COUNT+1):
-        threads.append(Thread(target=get_response, args=(job, page_num)))
+    threads.append(Thread(target=get_response, args=(job, PAGE_COUNT)))
 
 
 start = time()
